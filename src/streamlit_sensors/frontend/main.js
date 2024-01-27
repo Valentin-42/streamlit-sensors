@@ -27,21 +27,27 @@ function onRender(event) {
       //   let longitude = position.coords.longitude;
       //   sendValue({latitude, longitude});
       // })
-        
-      // window.addEventListener("deviceorientation", function (event) {
-      //   let alpha = event.alpha;
-      //   let beta = event.beta;
-      //   let gamma = event.gamma;
+      
+      if (window.DeviceOrientationEvent) {
+        window.addEventListener("deviceorientation", function (event) {
+          let alpha = event.alpha;
+          let beta = event.beta;
+          let gamma = event.gamma;
 
-      //   sendValue({
-      //     alpha,
-      //     beta,
-      //     gamma
-      //   });
-      // });
+          sendValue({
+            "worked:":"yes",
+            alpha,
+            beta,
+            gamma
+          });
 
-      sendValue("Button clicked");
-
+        });
+      }
+      else{
+        sendValue({
+          "worked:":"no"
+        });
+      }
         
       }
 
