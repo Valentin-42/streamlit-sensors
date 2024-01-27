@@ -29,30 +29,47 @@ function onRender(event) {
       //   sendValue({latitude, longitude});
       // })
       
-      if (window.DeviceOrientationEvent) {
-        window.addEventListener("deviceorientation", function (event) {
-          let alpha = event.alpha;
-          let beta = event.beta;
-          let gamma = event.gamma;
-
-          sendValue({
-            "worked:":"yes",
-            alpha,
-            beta,
-            gamma
-          });
-
-        });
-      }
-      else{
-        sendValue({
-          "worked:":"no"
-        });
-      }
+      requestDeviceOrientation()
+      sendValue(handleOrientation(event))
         
       }
 
     window.rendered = true
+  }
+}
+
+function handleOrientation(event) {
+  let alpha = event.alpha
+  let beta = event.beta
+  let gamma = event.gamma
+
+  console.log(alpha, beta, gamma)
+
+  return {alpha, beta, gamma}
+}
+
+
+
+async function requestDeviceOrientation() {
+  if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+    //iOS 13+ devices
+    try {
+      const permissionState = await DeviceOrientationEvent.requestPermission()
+      if (permissionState === 'granted') {
+        window.addEventListener('deviceorientation', handleOrientation)
+      } else {
+        alert('Permission was denied')
+      }
+    } catch (error) {
+      alert(error)
+    }
+  } else if ('DeviceOrientationEvent' in window) {
+    //non iOS 13+ devices
+    console.log("not iOS");
+    window.addEventListener('deviceorientation', handleOrientation)
+  } else {
+    //not supported
+    alert('Not supported')
   }
 }
 
