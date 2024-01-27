@@ -18,21 +18,21 @@ function onRender(event) {
     // You most likely want to get the data passed in like this
     // const {input1, input2, input3} = event.detail.args
     const button = document.getElementById("button_id");
-    button.addEventListener("click", updateButton);
-    button.addEventListener("touchstart", updateButton);
+    button.addEventListener("click", onClick);
+    button.addEventListener("touchstart", onClick);
 
-    function updateButton() {
+    // function updateButton() {
 
-      // navigator.geolocation.getCurrentPosition((position) => {
-      //   let latitude = position.coords.latitude;
-      //   let longitude = position.coords.longitude;
-      //   sendValue({latitude, longitude});
-      // })
+    //   // navigator.geolocation.getCurrentPosition((position) => {
+    //   //   let latitude = position.coords.latitude;
+    //   //   let longitude = position.coords.longitude;
+    //   //   sendValue({latitude, longitude});
+    //   // })
       
-      requestDeviceOrientation()
-      sendValue(handleOrientation(event))
+    //   requestDeviceOrientation()
+    //   sendValue(handleOrientation(event))
         
-      }
+    //   }
 
     window.rendered = true
   }
@@ -44,11 +44,24 @@ function handleOrientation(event) {
   let gamma = event.gamma
 
   console.log(alpha, beta, gamma)
-
-  return {alpha, beta, gamma}
+  sendValue({alpha, beta, gamma});
 }
 
-
+function onClick() {
+  // feature detect
+  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+    DeviceOrientationEvent.requestPermission()
+      .then(permissionState => {
+        if (permissionState === 'granted') {
+          window.addEventListener('deviceorientation', handleOrientation);
+        }
+      })
+      .catch(console.error);
+  } else {
+    sendValue("not iOS / Wrong IOS version");
+    console.log("not iOS / Wrong IOS version");
+  }
+}
 
 async function requestDeviceOrientation() {
   if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
