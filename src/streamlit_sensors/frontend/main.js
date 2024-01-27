@@ -28,17 +28,19 @@ function onRender(event) {
       //   sendValue({latitude, longitude});
       // })
         
-      window.addEventListener("deviceorientation", function (event) {
-        let alpha = event.alpha;
-        let beta = event.beta;
-        let gamma = event.gamma;
+      // window.addEventListener("deviceorientation", function (event) {
+      //   let alpha = event.alpha;
+      //   let beta = event.beta;
+      //   let gamma = event.gamma;
 
-        sendValue({
-          alpha,
-          beta,
-          gamma
-        });
-      });
+      //   sendValue({
+      //     alpha,
+      //     beta,
+      //     gamma
+      //   });
+      // });
+
+      sendValue("Button clicked");
 
         
       }
