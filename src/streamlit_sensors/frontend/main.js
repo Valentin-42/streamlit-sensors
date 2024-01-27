@@ -19,6 +19,7 @@ function onRender(event) {
     // const {input1, input2, input3} = event.detail.args
     const button = document.getElementById("button_id");
     button.addEventListener("click", updateButton);
+    button.addEventListener("touchstart", updateButton);
 
     function updateButton() {
 
