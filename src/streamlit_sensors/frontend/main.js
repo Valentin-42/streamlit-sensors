@@ -16,10 +16,41 @@ function onRender(event) {
   // Only run the render code the first time the component is loaded.
   if (!window.rendered) {
     // You most likely want to get the data passed in like this
-    // const {input1, input2, input3} = event.detail.args
-    const button = document.getElementById("button_id");
-    // button.addEventListener("click", onClick);
+    var { height, width } = event.detail.args;
+           
+    let video = document.getElementById('video');
+    let canvas = document.getElementById('canvas');
+    let button = document.getElementById("button_id");
+
+
+    video.setAttribute('width', '100%');
+    video.setAttribute('height', 'auto');
+
+    const constraints =  { facingMode: 'environment', advanced : [{focusMode: "continuous"}]};
+    navigator.mediaDevices.getUserMedia({ video: constraints })
+      .then(function(stream) {
+        video.srcObject = stream;
+        video.play();
+      })
+      .catch(function(err) {
+        console.log("An error occurred: " + err);
+      });
+
+    function takePicture() {
+      let context = canvas.getContext('2d');
+      width = video.srcObject.getVideoTracks()[0].getSettings().width;
+      height = video.srcObject.getVideoTracks()[0].getSettings().height;
+      canvas.width = width;
+      canvas.height = height;
+      context.drawImage(video, 0, 0, width, height);      
+      var data = canvas.toDataURL('image/png');
+      sendValue(data);
+    }      
+      
+      Streamlit.setFrameHeight(height);
+
     button.addEventListener("touchstart", onClick);
+    video.addEventListener('touchstart', takePicture);
 
     // function updateButton() {
 
