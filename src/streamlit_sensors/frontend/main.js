@@ -15,10 +15,9 @@ function sendValue(value) {
 function onRender(event) {
   // Only run the render code the first time the component is loaded.
   if (!window.rendered) {
-    // You most likely want to get the data passed in like this
-    // const {input1, input2, input3} = event.detail.args
-    const button = document.getElementById("button_id");
-    // button.addEventListener("click", onClick);
+   
+    let button = document.getElementById("button_id");
+
     button.addEventListener("touchstart", onClick);
 
     // function updateButton() {
