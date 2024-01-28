@@ -19,7 +19,7 @@ function onRender(event) {
     // const {input1, input2, input3} = event.detail.args
     const button = document.getElementById("button_id");
     button.addEventListener("click", onClick);
-    button.addEventListener("touchstart", onClick);
+    // button.addEventListener("touchstart", onClick);
 
     // function updateButton() {
 
@@ -53,7 +53,13 @@ function onClick() {
     DeviceOrientationEvent.requestPermission()
       .then(permissionState => {
         if (permissionState === 'granted') {
-          window.addEventListener('deviceorientation', handleOrientation);
+          if (!window.orientationEventListenerAdded) {
+            window.addEventListener('deviceorientation', handleOrientation);
+            window.orientationEventListenerAdded = true;
+          }
+          else{
+            sendValue("already added");
+          }
         }
       })
       .catch(console.error);
