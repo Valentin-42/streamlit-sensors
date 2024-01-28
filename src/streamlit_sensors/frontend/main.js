@@ -18,8 +18,8 @@ function onRender(event) {
     // You most likely want to get the data passed in like this
     // const {input1, input2, input3} = event.detail.args
     const button = document.getElementById("button_id");
-    button.addEventListener("click", onClick);
-    // button.addEventListener("touchstart", onClick);
+    // button.addEventListener("click", onClick);
+    button.addEventListener("touchstart", onClick);
 
     // function updateButton() {
 
