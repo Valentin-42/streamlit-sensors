@@ -7,7 +7,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setuptools.setup(
     name="streamlit-sensors",
-    version="0.0.9",
+    version="0.1.1",
     author="Valentin Vial",
     author_email="valentinvialent@gmail.com",
     description="Get geolocation and heading",
