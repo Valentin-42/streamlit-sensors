@@ -44,7 +44,11 @@ function handleOrientation(event) {
   let gamma = event.gamma
 
   console.log(alpha, beta, gamma)
+  let label = document.getElementById("coords");
+  label.innerHTML = `alpha: ${alpha}, beta: ${beta}, gamma: ${gamma}`;
   sendValue({alpha, beta, gamma});
+  window.removeEventListener('deviceorientation', handleOrientation);
+  window.orientationEventListenerAdded = false;
 }
 
 function onClick() {
