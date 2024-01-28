@@ -17,8 +17,8 @@ function onRender(event) {
   if (!window.rendered) {
    
 
-    startUpdates(750);
-    
+    // startUpdates(750);
+    getGeolocation2();
     // Update heading using getHeading function
 
 
@@ -56,6 +56,26 @@ async function fetchData() {
     console.error("Error:", error);
   }
 }
+
+
+function getGeolocation2() {
+  const watchId = navigator.geolocation.watchPosition(successCallback, errorCallback);
+}
+
+function successCallback(position) {
+  const latitude = position.coords.latitude;
+  const longitude = position.coords.longitude;
+
+  // Do something with the updated geolocation data
+  console.log("Updated Geolocation:", { latitude, longitude });
+  // You can send the updated values to Streamlit or perform other actions here
+  sendValue({ latitude, longitude });
+}
+
+function errorCallback(error) {
+  console.error("Error:", error);
+}
+
 
 function getGeolocation() {
   return new Promise((resolve, reject) => {
