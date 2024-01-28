@@ -16,26 +16,83 @@ function onRender(event) {
   // Only run the render code the first time the component is loaded.
   if (!window.rendered) {
    
-    let button = document.getElementById("button_id");
 
-    button.addEventListener("touchstart", onClick);
+    startUpdates(750);
+    
+    // Update heading using getHeading function
 
-    // function updateButton() {
-
-    //   // navigator.geolocation.getCurrentPosition((position) => {
-    //   //   let latitude = position.coords.latitude;
-    //   //   let longitude = position.coords.longitude;
-    //   //   sendValue({latitude, longitude});
-    //   // })
-      
-    //   requestDeviceOrientation()
-    //   sendValue(handleOrientation(event))
-        
-    //   }
 
     window.rendered = true
   }
 }
+
+
+function startUpdates(interval) {
+  // Set up a periodic update using setInterval
+  setInterval(fetchData, interval);
+}
+
+async function fetchData() {
+  try {
+    // Get Device Orientation
+    // Get Device Position
+    let latitude = null;
+    let longitude = null;
+    let heading = 0;
+
+    // Update latitude and longitude using getGeolocation function
+    var position = await getGeolocation();
+    latitude = position.latitude;
+    longitude = position.longitude;
+
+    // Update heading using getHeading function
+    heading = await getHeading();
+
+    // Now, you can log and send the values
+    console.log(latitude, longitude, heading);
+    sendValue({ latitude, longitude, heading});
+
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
+function getGeolocation() {
+  return new Promise((resolve, reject) => {
+      if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+              (position) => {
+                  const latitude = position.coords.latitude;
+                  const longitude = position.coords.longitude;
+                  resolve({ latitude, longitude });
+              },
+              (error) => {
+                  reject(error);
+              }
+          );
+      } else {
+          reject(new Error("Geolocation is not supported by this browser."));
+      }
+  });
+}
+
+function getHeading() {
+  return new Promise((resolve, reject) => {
+      if (window.DeviceOrientationEvent) {
+          window.addEventListener(
+              "deviceorientation",
+              (event) => {
+                  const heading = event.webkitCompassHeading;
+                  resolve(heading);
+              },
+              true
+          );
+      } else {
+          reject(new Error("Device orientation is not supported by this browser."));
+      }
+  });
+}
+
 
 function handleOrientation(event) {
   let alpha = event.alpha
@@ -45,7 +102,7 @@ function handleOrientation(event) {
   console.log(alpha, beta, gamma)
   let label = document.getElementById("coords");
   label.innerHTML = `alpha: ${alpha}, beta: ${beta}, gamma: ${gamma}`;
-  sendValue({alpha, beta, gamma});
+  sendValue({alpha, beta, gamma});s
   window.removeEventListener('deviceorientation', handleOrientation);
   window.orientationEventListenerAdded = false;
 }
