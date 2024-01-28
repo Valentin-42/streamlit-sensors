@@ -27,14 +27,30 @@ function onRender(event) {
     video.setAttribute('height', 'auto');
 
     const constraints =  { facingMode: 'environment', advanced : [{focusMode: "continuous"}]};
-    navigator.mediaDevices.getUserMedia({ video: constraints })
-      .then(function(stream) {
-        video.srcObject = stream;
-        video.play();
+    
+    navigator.permissions.query({ name: 'camera' })
+      .then(permissionStatus => {
+        if (permissionStatus.state === 'granted') {
+          initializeCamera();
+        } else {
+          console.log('Camera permission denied.');
+        }
       })
-      .catch(function(err) {
-        console.log("An error occurred: " + err);
+      .catch(err => {
+        console.error('Error checking camera permission:', err);
       });
+    
+    function initializeCamera() {
+      const constraints = { facingMode: 'environment', advanced: [{ focusMode: 'continuous' }] };
+      navigator.mediaDevices.getUserMedia({ video: constraints })
+        .then(function (stream) {
+          video.srcObject = stream;
+          video.play();
+        })
+        .catch(function (err) {
+          console.log("An error occurred: " + err);
+        });
+    }
 
     function takePicture() {
       let context = canvas.getContext('2d');
