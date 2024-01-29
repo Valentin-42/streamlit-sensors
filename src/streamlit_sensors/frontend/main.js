@@ -16,28 +16,28 @@ function onRender(event) {
   // Only run the render code the first time the component is loaded.
   if (!window.rendered) {
 
-
-    getGeolocation();
-
     button_sensor = document.getElementById("button");
-    button_sensor.addEventListener("click", onClick);
+    button_sensor.addEventListener("click", startSensors);
 
     window.rendered = true
   }
 }
 
+var latitude = 0;
+var longitude = 0;
+var heading = 0;
 
-function getGeolocation() {
-  const watchId = navigator.geolocation.watchPosition(successCallback, errorCallback);
-}
 function successCallback(position) {
-  const latitude = position.coords.latitude;
-  const longitude = position.coords.longitude;
+  latitude = position.coords.latitude;
+  longitude = position.coords.longitude;
 
-  // Do something with the updated geolocation data
   console.log("Updated Geolocation:", { latitude, longitude });
-  // You can send the updated values to Streamlit or perform other actions here
-  sendValue({ latitude, longitude });
+
+  latitude_label = document.getElementById("latitude");
+  latitude_label.innerHTML = "Latitude: " + latitude;
+
+  longitude_label = document.getElementById("longitude");
+  longitude_label.innerHTML = "Longitude: " + longitude;
 }
 function errorCallback(error) {
   console.error("Error:", error);
@@ -49,13 +49,15 @@ function handleOrientation(event) {
 
   heading = event.alpha; 
   console.log("Heading:", heading);
-  label_sensor = document.getElementById("sensor");
+  label_sensor = document.getElementById("heading");
   label_sensor.innerHTML = "Heading: " + heading;
 
+  sendValue({ latitude, longitude, heading });
 }
 
 
-function onClick() {
+function startSensors() {
+
   if (typeof DeviceMotionEvent.requestPermission === 'function') {
     // Handle iOS 13+ devices.
     DeviceMotionEvent.requestPermission()
@@ -71,6 +73,9 @@ function onClick() {
     // Handle regular non iOS 13+ devices.
     window.addEventListener('deviceorientation', handleOrientation);
   }
+
+  navigator.geolocation.watchPosition(successCallback, errorCallback);
+
   document.getElementById("button").disabled = true;
 
 }

@@ -31,7 +31,12 @@ def main():
 
 
     value = streamlit_sensors()
-    st.write(value)
+    if value is not None:
+        st.write(value)
+
+        image = st.camera_input("Capture Traffic Sign")
+        if image is not None:
+            st.image(image, caption="Captured Traffic Sign", use_column_width=True)
 
 if __name__ == "__main__":
     main()
