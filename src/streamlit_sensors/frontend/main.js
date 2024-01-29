@@ -32,7 +32,6 @@ function successCallback(position) {
   latitude = position.coords.latitude;
   longitude = position.coords.longitude;
 
-
   latitude_label = document.getElementById("latitude");
   latitude_label.innerHTML = "Latitude: " + latitude;
 
@@ -51,6 +50,22 @@ function handleOrientation(event) {
   label_sensor.innerHTML = "Heading: " + heading;
 
   sendValue({ latitude, longitude, heading });
+}
+
+function requestLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      function (position) {
+        successCallback(position);
+        sendValue({ latitude, longitude, heading });
+      },
+      function (error) {
+        errorCallback(error);
+      }
+    );
+  } else {
+    console.error("Geolocation is not supported by this browser.");
+  }
 }
 
 
@@ -72,6 +87,7 @@ function startSensors() {
     window.addEventListener('deviceorientation', handleOrientation);
   }
 
+  requestLocation();
   navigator.geolocation.watchPosition(successCallback, errorCallback);
 
   document.getElementById("button").disabled = true;
