@@ -26,17 +26,24 @@ def streamlit_sensors(
     return component_value
 
 
+st.set_page_config(
+    page_title="Streamlit Sensors",
+    page_icon=":compass:",
+    layout="wide",
+    initial_sidebar_state="collapsed",
+)
+
 def main():
     st.write("## Example")
 
 
     value = streamlit_sensors()
-    if value is not None:
+    if value is not None and "image_data" in value and value["image_data"] is not None and value["image_data"] != 0:
         st.write(value)
 
-        image = st.camera_input("Capture Traffic Sign")
-        if image is not None:
-            st.image(image, caption="Captured Traffic Sign", use_column_width=True)
+        image = value["image_data"]
+        st.image(image, use_column_width=True)
+
 
 if __name__ == "__main__":
     main()

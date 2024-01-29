@@ -27,6 +27,7 @@ function onRender(event) {
 var latitude = 0;
 var longitude = 0;
 var heading = 0;
+var image_data = 0;
 
 function successCallback(position) {
   latitude = position.coords.latitude;
@@ -49,7 +50,6 @@ function handleOrientation(event) {
   label_sensor = document.getElementById("heading");
   label_sensor.innerHTML = "Heading: " + heading;
 
-  sendValue({ latitude, longitude, heading });
 }
 
 function requestLocation() {
@@ -57,7 +57,6 @@ function requestLocation() {
     navigator.geolocation.getCurrentPosition(
       function (position) {
         successCallback(position);
-        sendValue({ latitude, longitude, heading });
       },
       function (error) {
         errorCallback(error);
@@ -68,6 +67,59 @@ function requestLocation() {
   }
 }
 
+
+function getVideo(){
+
+  if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
+  
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        width: {
+          min: 1280,
+          ideal: 1920,
+          max: 2560,
+        },
+        height: {
+          min: 720,
+          ideal: 1080,
+          max: 1440
+        },
+        facingMode: 'environment'
+      }
+    })
+
+    .then(function(stream) {
+
+      var video = document.getElementById('video');
+      video.srcObject = stream;
+      video.play();
+
+      // Add click event listener to the video element
+      video.addEventListener('click', function () {
+        takePicture(video);
+      });
+
+    })
+
+  }
+}
+
+function takePicture(video) {
+  // Create a canvas element to capture the video stream
+  var canvas = document.createElement('canvas');
+  var context = canvas.getContext('2d');
+
+  // Set the canvas dimensions to match the video stream
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+
+  // Capture a frame from the video stream without drawing it on the canvas
+  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+  image_data = canvas.toDataURL('image/png');
+
+  console.log(image_data);
+  sendValue({ latitude, longitude, heading, image_data});
+}
 
 function startSensors() {
 
@@ -90,6 +142,8 @@ function startSensors() {
   requestLocation();
   navigator.geolocation.watchPosition(successCallback, errorCallback);
 
+  getVideo();
+
   document.getElementById("button").disabled = true;
 
 }
@@ -99,4 +153,4 @@ Streamlit.events.addEventListener(Streamlit.RENDER_EVENT, onRender)
 // Tell Streamlit that the component is ready to receive events
 Streamlit.setComponentReady()
 // Render with the correct height, if this is a fixed-height component
-Streamlit.setFrameHeight(100)
+Streamlit.setFrameHeight(500)
