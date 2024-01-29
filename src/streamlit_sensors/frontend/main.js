@@ -29,6 +29,7 @@ var longitude = 0;
 var heading = 0;
 var image_data = 0;
 var started = false;
+const streaming = false;
 
 function successCallback(position) {
   latitude = position.coords.latitude;
@@ -90,9 +91,26 @@ function getVideo(){
 
       var video = document.getElementById('video');
       video.srcObject = stream;
+
       video.onloadedmetadata = function (e) {
         video.play();
       };
+
+      video.addEventListener(
+        "canplay",
+        (ev) => {
+          if (!streaming) {
+            height = (video.videoHeight / video.videoWidth) * width;
+      
+            video.setAttribute("width", width);
+            video.setAttribute("height", height);
+            canvas.setAttribute("width", width);
+            canvas.setAttribute("height", height);
+            streaming = true;
+          }
+        },
+        false,
+      );
 
       // Add click event listener to the video element
       video.addEventListener('click', function () {
