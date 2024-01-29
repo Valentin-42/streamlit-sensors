@@ -50,6 +50,7 @@ function handleOrientation(event) {
   label_sensor = document.getElementById("heading");
   label_sensor.innerHTML = "Heading: " + heading;
 
+
 }
 
 function requestLocation() {
@@ -128,7 +129,7 @@ function startSensors() {
     DeviceMotionEvent.requestPermission()
       .then((state) => {
         if (state === 'granted') {
-          window.addEventListener('deviceorientation', handleOrientation);
+          window.addEventListener('deviceorientation', throttledHandleOrientation);
         } else {
           console.error('Request to access the orientation was rejected');
         }
@@ -136,7 +137,7 @@ function startSensors() {
       .catch(console.error);
   } else {
     // Handle regular non iOS 13+ devices.
-    window.addEventListener('deviceorientation', handleOrientation);
+    window.addEventListener('deviceorientation', throttledHandleOrientation);
   }
 
   requestLocation();
@@ -147,6 +148,21 @@ function startSensors() {
   document.getElementById("button").disabled = true;
 
 }
+
+
+
+function throttle(func, delay) {
+  let lastCall = 0;
+  return function (...args) {
+    const now = new Date().getTime();
+    if (now - lastCall >= delay) {
+      lastCall = now;
+      func(...args);
+    }
+  };
+}
+const throttledHandleOrientation = throttle(handleOrientation, 500);
+
 
 // Render the component whenever python send a "render event"
 Streamlit.events.addEventListener(Streamlit.RENDER_EVENT, onRender)
