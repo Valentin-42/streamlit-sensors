@@ -4,7 +4,7 @@
 // means you're missing that file.
 
 function sendValue(value) {
-  console.log("Sending value to Python", value)
+  // console.log("Sending value to Python", value)
   Streamlit.setComponentValue(value)
 }
 
