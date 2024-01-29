@@ -49,7 +49,7 @@ function handleOrientation(event) {
   heading = event.alpha; 
   label_sensor = document.getElementById("heading");
   label_sensor.innerHTML = "Heading: " + heading;
-
+  window.removeEventListener('deviceorientation', handleOrientation);
 
 }
 
@@ -111,8 +111,8 @@ function takePicture(video) {
   var context = canvas.getContext('2d');
 
   // Set the canvas dimensions to match the video stream
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
+  canvas.width = video.videoWidth/8;
+  canvas.height = video.videoHeight/8;
 
   // Capture a frame from the video stream without drawing it on the canvas
   context.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -129,7 +129,7 @@ function startSensors() {
     DeviceMotionEvent.requestPermission()
       .then((state) => {
         if (state === 'granted') {
-          window.addEventListener('deviceorientation', throttledHandleOrientation);
+          window.addEventListener('deviceorientation', handleOrientation);
         } else {
           console.error('Request to access the orientation was rejected');
         }
@@ -137,7 +137,7 @@ function startSensors() {
       .catch(console.error);
   } else {
     // Handle regular non iOS 13+ devices.
-    window.addEventListener('deviceorientation', throttledHandleOrientation);
+    window.addEventListener('deviceorientation', handleOrientation);
   }
 
   requestLocation();
@@ -149,19 +149,6 @@ function startSensors() {
 
 }
 
-
-
-function throttle(func, delay) {
-  let lastCall = 0;
-  return function (...args) {
-    const now = new Date().getTime();
-    if (now - lastCall >= delay) {
-      lastCall = now;
-      func(...args);
-    }
-  };
-}
-const throttledHandleOrientation = throttle(handleOrientation, 500);
 
 
 // Render the component whenever python send a "render event"
