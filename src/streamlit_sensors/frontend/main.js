@@ -16,28 +16,18 @@ function onRender(event) {
   // Only run the render code the first time the component is loaded.
   if (!window.rendered) {
 
-    requestPosition();
-    getGeolocation2();
+
+    getGeolocation();
+
+    button_sensor = document.getElementById("button");
+    button_sensor.addEventListener("click", onClick);
 
     window.rendered = true
   }
 }
 
-function requestPosition() {
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      const latitude = position.coords.latitude;
-      const longitude = position.coords.longitude;
-      console.log("Requested Geolocation:", { latitude, longitude });
-    },
-    (error) => {
-      console.error("Error requesting geolocation:", error);
-    }
-  );
-}
 
-
-function getGeolocation2() {
+function getGeolocation() {
   const watchId = navigator.geolocation.watchPosition(successCallback, errorCallback);
 }
 function successCallback(position) {
@@ -64,12 +54,29 @@ function handleOrientation(event) {
   // Extract heading information from the event and send it to Streamlit
   const heading = event.alpha || 0; // alpha is the compass direction (0 to 360 degrees)
   console.log("Heading:", heading);
+  label_sensor = document.getElementById("sensor");
+  label_sensor.innerHTML = "Heading: " + heading;
   // Note: You may need to convert the heading value based on your requirements
 }
 
 
-
-
+function onClick() {
+  if (typeof DeviceMotionEvent.requestPermission === 'function') {
+    // Handle iOS 13+ devices.
+    DeviceMotionEvent.requestPermission()
+      .then((state) => {
+        if (state === 'granted') {
+          window.addEventListener('devicemotion', handleOrientation);
+        } else {
+          console.error('Request to access the orientation was rejected');
+        }
+      })
+      .catch(console.error);
+  } else {
+    // Handle regular non iOS 13+ devices.
+    window.addEventListener('devicemotion', handleOrientation);
+  }
+}
 
 // Render the component whenever python send a "render event"
 Streamlit.events.addEventListener(Streamlit.RENDER_EVENT, onRender)
