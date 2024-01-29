@@ -4,6 +4,7 @@
 // means you're missing that file.
 
 function sendValue(value) {
+  console.log("Sending value to Python", value)
   Streamlit.setComponentValue(value)
 }
 
@@ -31,7 +32,6 @@ function successCallback(position) {
   latitude = position.coords.latitude;
   longitude = position.coords.longitude;
 
-  console.log("Updated Geolocation:", { latitude, longitude });
 
   latitude_label = document.getElementById("latitude");
   latitude_label.innerHTML = "Latitude: " + latitude;
@@ -45,10 +45,8 @@ function errorCallback(error) {
 
 
 function handleOrientation(event) {
-  console.log("Orientation event");
 
   heading = event.alpha; 
-  console.log("Heading:", heading);
   label_sensor = document.getElementById("heading");
   label_sensor.innerHTML = "Heading: " + heading;
 
