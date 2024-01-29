@@ -44,10 +44,6 @@ function errorCallback(error) {
 }
 
 
-function getHeading() {
-  window.addEventListener('deviceorientation', handleOrientation, true);
-}
-
 function handleOrientation(event) {
   console.log("Orientation event");
 
@@ -65,7 +61,7 @@ function onClick() {
     DeviceMotionEvent.requestPermission()
       .then((state) => {
         if (state === 'granted') {
-          window.addEventListener('devicemotion', handleOrientation);
+          window.addEventListener('deviceorientation', handleOrientation);
         } else {
           console.error('Request to access the orientation was rejected');
         }
@@ -73,7 +69,7 @@ function onClick() {
       .catch(console.error);
   } else {
     // Handle regular non iOS 13+ devices.
-    window.addEventListener('devicemotion', handleOrientation);
+    window.addEventListener('deviceorientation', handleOrientation);
   }
 }
 
