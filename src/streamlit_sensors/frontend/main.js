@@ -28,6 +28,7 @@ var latitude = 0;
 var longitude = 0;
 var heading = 0;
 var image_data = 0;
+var started = false;
 
 function successCallback(position) {
   latitude = position.coords.latitude;
@@ -124,26 +125,32 @@ function takePicture(video) {
 
 function startSensors() {
 
-  if (typeof DeviceMotionEvent.requestPermission === 'function') {
-    // Handle iOS 13+ devices.
-    DeviceMotionEvent.requestPermission()
-      .then((state) => {
-        if (state === 'granted') {
-          window.addEventListener('deviceorientation', handleOrientation);
-        } else {
-          console.error('Request to access the orientation was rejected');
-        }
-      })
-      .catch(console.error);
-  } else {
-    // Handle regular non iOS 13+ devices.
-    window.addEventListener('deviceorientation', handleOrientation);
-  }
-
+  getVideo();
   requestLocation();
   navigator.geolocation.watchPosition(successCallback, errorCallback);
 
-  getVideo();
+  if (typeof DeviceMotionEvent.requestPermission === 'function') {
+    // Handle iOS 13+ devices.
+    if (started === false) { 
+      DeviceMotionEvent.requestPermission()
+        .then((state) => {
+          if (state === 'granted') {
+            window.addEventListener('deviceorientation', handleOrientation);
+            started = true;
+          } else {
+            console.error('Request to access the orientation was rejected');
+          }
+        })
+        .catch(console.error);
+    } else {
+      window.addEventListener('deviceorientation', handleOrientation);
+    }
+
+  } else {
+    // Handle regular non iOS 13+ devices.
+    window.addEventListener('deviceorientation', handleOrientation);
+    started = true;
+  }
 
   document.getElementById("button").disabled = true;
 
