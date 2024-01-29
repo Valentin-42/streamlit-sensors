@@ -50,13 +50,12 @@ function getHeading() {
 
 function handleOrientation(event) {
   console.log("Orientation event");
-  console.log(event);
-  // Extract heading information from the event and send it to Streamlit
-  const heading = event.alpha || 0; // alpha is the compass direction (0 to 360 degrees)
+
+  heading = event.alpha; 
   console.log("Heading:", heading);
   label_sensor = document.getElementById("sensor");
   label_sensor.innerHTML = "Heading: " + heading;
-  // Note: You may need to convert the heading value based on your requirements
+
 }
 
 
