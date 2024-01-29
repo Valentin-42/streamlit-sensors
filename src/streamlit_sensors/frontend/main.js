@@ -71,6 +71,8 @@ function onClick() {
     // Handle regular non iOS 13+ devices.
     window.addEventListener('deviceorientation', handleOrientation);
   }
+  document.getElementById("button").disabled = true;
+
 }
 
 // Render the component whenever python send a "render event"
