@@ -77,14 +77,10 @@ function getVideo(){
     navigator.mediaDevices.getUserMedia({
       video: {
         width: {
-          min: 1280,
-          ideal: 1920,
-          max: 2560,
+          min: 600
         },
         height: {
-          min: 720,
-          ideal: 1080,
-          max: 1440
+          min: 400
         },
         facingMode: 'environment'
       }
@@ -94,7 +90,9 @@ function getVideo(){
 
       var video = document.getElementById('video');
       video.srcObject = stream;
-      video.play();
+      video.onloadedmetadata = function (e) {
+        video.play();
+      };
 
       // Add click event listener to the video element
       video.addEventListener('click', function () {
